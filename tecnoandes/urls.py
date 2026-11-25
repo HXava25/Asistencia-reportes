@@ -1,0 +1,5 @@
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from asistencia.admin import rrhh_admin_site
+from asistencia import views
+urlpatterns = [path("admin/", rrhh_admin_site.urls), path("", views.dashboard, name="dashboard"), path("login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"), path("ingresar/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="ingresar"), path("logout/", auth_views.LogoutView.as_view(), name="logout"), path("empleados/nuevo/", views.register_employee, name="register_employee"), path("asistencia/", views.attendance, name="attendance"), path("asistencia/<int:pk>/corregir/", views.correct_attendance, name="correct_attendance"), path("permisos/solicitar/", views.request_leave, name="request_leave"), path("permisos/", views.leave_list, name="leave_list"), path("permisos/<int:pk>/decision/", views.leave_decision, name="leave_decision"), path("reportes/", views.reports, name="reports")]

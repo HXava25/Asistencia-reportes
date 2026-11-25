@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Registrar empleado · TecnoAndes Personas{% endblock %}
+{% block content %}
+<p class="eyebrow">Administración de personas</p>
+<h1>Registrar empleado</h1>
+<p class="page-intro">Crea el perfil y las credenciales de acceso corporativo del nuevo colaborador.</p>
+<form class="card form-card" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="form-actions">
+    <button type="submit">Crear empleado <span aria-hidden="true">→</span></button>
+    <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

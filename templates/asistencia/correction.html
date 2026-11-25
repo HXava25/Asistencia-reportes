@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Corregir marcación · TecnoAndes Personas{% endblock %}
+{% block content %}
+<p class="eyebrow">Control de jornada</p>
+<h1>Corregir marcación</h1>
+<p class="page-intro">{{ registro.empleado }} · entrada del {{ registro.entrada|date:"d M Y, H:i" }}</p>
+<form class="card form-card" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="form-actions">
+    <button type="submit">Guardar corrección</button>
+    <a class="btn btn-secondary" href="{% url 'reports' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

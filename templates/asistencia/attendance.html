@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Mi asistencia · TecnoAndes Personas{% endblock %}
+{% block content %}
+<p class="eyebrow">Mi jornada</p>
+<h1>Asistencia diaria</h1>
+<p class="page-intro">Registra tus marcaciones y consulta el resumen de hoy.</p>
+
+<div class="attendance-layout">
+  <section class="card attendance-card" aria-label="Estado de la marcación">
+    {% if registro %}
+      <div>
+        {% if registro.salida %}
+        <span class="status">Jornada finalizada</span>
+        <p class="time-display">{{ registro.entrada|time:"H:i" }} – {{ registro.salida|time:"H:i" }}</p>
+        <p class="muted">{{ registro.entrada|date:"l, d F Y" }}</p>
+        {% else %}
+        <span class="status">Jornada en curso</span>
+        <p class="time-display">{{ registro.entrada|time:"H:i" }}</p>
+        <p class="muted">Entrada registrada · {{ registro.entrada|date:"l, d F Y" }}</p>
+        {% endif %}
+      </div>
+      {% if registro.salida %}
+      <p class="muted">Total: <strong>{{ registro.horas|floatformat:1 }} h</strong> · Extra: <strong>{{ registro.horas_extra|floatformat:1 }} h</strong></p>
+      {% else %}
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="accion" value="salida">Registrar salida <span aria-hidden="true">→</span></button>
+      </form>
+      {% endif %}
+    {% else %}
+      <div>
+        <span class="status">Sin marcación de hoy</span>
+        <p class="time-display">--:--</p>
+        <p class="muted">Aún no has registrado tu entrada.</p>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="accion" value="entrada">Registrar entrada <span aria-hidden="true">→</span></button>
+      </form>
+    {% endif %}
+  </section>
+  <aside class="attendance-side">
+    <p class="eyebrow">Ten en cuenta</p>
+    <h2>Una marca a la vez</h2>
+    <p>Registra tu entrada al iniciar la jornada y tu salida al terminar. Las marcaciones se habilitan en días laborables, dentro de los horarios definidos por la empresa.</p>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Ingresar · TecnoAndes Personas{% endblock %}
+{% block content %}
+<section class="auth-layout" aria-label="Acceso al portal">
+  <div class="auth-panel card">
+    <p class="eyebrow">Acceso al portal</p>
+    <h1>Bienvenido.</h1>
+    <p class="muted">Ingresa con tu usuario corporativo para continuar.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Ingresar <span aria-hidden="true">→</span></button>
+    </form>
+  </div>
+  <aside class="auth-aside">
+    <div>
+      <span class="brand-mark" aria-hidden="true">T</span>
+    </div>
+    <div>
+      <h2>Tu día de trabajo, más claro.</h2>
+      <p>Consulta tus marcaciones, organiza solicitudes y mantente al tanto de tu jornada.</p>
+    </div>
+    <span class="auth-signature">TECNOANDES · PERSONAS</span>
+  </aside>
+</section>
+{% endblock %}

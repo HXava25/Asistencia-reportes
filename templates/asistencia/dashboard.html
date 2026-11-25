@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Inicio · TecnoAndes Personas{% endblock %}
+{% block content %}
+<section aria-labelledby="welcome-title">
+  <p class="eyebrow">Portal del colaborador</p>
+  <h1 id="welcome-title">Hola{% if empleado %}, {{ empleado.nombres }}{% endif %}.</h1>
+  <p class="page-intro">Tu jornada, permisos y novedades de trabajo, todo en un mismo lugar.</p>
+  {% if recordatorio %}<p class="notice" role="status">{{ recordatorio }}</p>{% endif %}
+  {% for solicitud in notificaciones %}
+  <p class="notice" role="status">Tu solicitud de permiso del {{ solicitud.fecha_inicio|date:"d M Y" }} {% if solicitud.estado == 'aprobado' %}fue aprobada{% else %}fue rechazada{% endif %}.</p>
+  {% endfor %}
+  {% if puede_gestionar_empleados %}<p><a class="btn btn-secondary" href="{% url 'register_employee' %}">Registrar empleado <span aria-hidden="true">+</span></a></p>{% endif %}
+</section>
+
+<section class="grid" aria-label="Accesos rápidos">
+  <article class="action-card">
+    <span class="action-icon" aria-hidden="true">01</span>
+    <h2>Asistencia</h2>
+    <p>Registra tu entrada o salida del día.</p>
+    <a class="btn" href="{% url 'attendance' %}">Ver mi jornada <span aria-hidden="true">→</span></a>
+  </article>
+  <article class="action-card">
+    <span class="action-icon" aria-hidden="true">02</span>
+    <h2>Permisos</h2>
+    <p>{% if empleado %}{{ empleado.vacaciones_disponibles }} días de vacaciones disponibles{% else %}Envía una solicitud y revisa su estado{% endif %}</p>
+    <a class="btn btn-secondary" href="{% url 'request_leave' %}">Solicitar permiso <span aria-hidden="true">→</span></a>
+  </article>
+  <article class="action-card">
+    <span class="action-icon" aria-hidden="true">03</span>
+    <h2>Solicitudes</h2>
+    <p>{% if pendientes != None %}{{ pendientes }} solicitudes pendientes de revisión{% else %}Consulta el estado de tus solicitudes{% endif %}</p>
+    <a class="btn btn-secondary" href="{% url 'leave_list' %}">Ver solicitudes <span aria-hidden="true">→</span></a>
+  </article>
+</section>
+
+{% if empleado %}
+<section aria-labelledby="recent-attendance-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Tu actividad</p>
+      <h2 id="recent-attendance-title">Asistencia reciente</h2>
+    </div>
+    <a href="{% url 'attendance' %}">Ir a asistencia <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Entrada</th><th>Salida</th><th>Horas trabajadas</th><th>Horas extra</th></tr></thead>
+      <tbody>
+        {% for a in asistencias %}
+        <tr>
+          <td>{{ a.entrada|date:"d M Y, H:i" }}</td>
+          <td>{% if a.salida %}{{ a.salida|date:"d M Y, H:i" }}{% else %}<span class="status">En curso</span>{% endif %}</td>
+          <td>{{ a.horas|floatformat:1 }}</td>
+          <td>{{ a.horas_extra|floatformat:1 }}</td>
+        </tr>
+        {% empty %}<tr><td class="empty-cell" colspan="4">Todavía no tienes marcaciones registradas.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

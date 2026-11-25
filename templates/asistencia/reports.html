@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Reportes · TecnoAndes Personas{% endblock %}
+{% block content %}
+<p class="eyebrow">Control de jornada</p>
+<h1>Reporte de asistencia</h1>
+<p class="page-intro">Filtra las marcaciones por fecha y área para consultar la actividad registrada.</p>
+
+<form class="card filter-form" method="get">
+  <label>Fecha
+    <input type="date" name="fecha" value="{{ request.GET.fecha }}">
+  </label>
+  <label>Área
+    <select name="area">
+      <option value="">Todas las áreas</option>
+      {% for a in areas %}<option value="{{ a.id }}"{% if request.GET.area == a.id|stringformat:"s" %} selected{% endif %}>{{ a.nombre }}</option>{% endfor %}
+    </select>
+  </label>
+  <button type="submit">Aplicar filtros</button>
+</form>
+
+<div class="section-heading">
+  <div><h2>Marcaciones</h2><p class="section-description muted">Detalle según los filtros seleccionados.</p></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Empleado</th><th>Área</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Extras</th>{% if puede_corregir %}<th>Acción</th>{% endif %}</tr></thead>
+    <tbody>
+      {% for a in registros %}
+      <tr>
+        <td>{% if puede_ver_personales %}{{ a.empleado }}{% else %}Colaborador #{{ a.empleado_id }}{% endif %}</td>
+        <td>{{ a.empleado.area }}</td>
+        <td>{{ a.entrada|date:"d M Y, H:i" }}</td>
+        <td>{% if a.salida %}{{ a.salida|date:"d M Y, H:i" }}{% else %}<span class="status">En curso</span>{% endif %}</td>
+        <td>{{ a.horas|floatformat:1 }}</td>
+        <td>{{ a.horas_extra|floatformat:1 }}</td>
+        {% if puede_corregir %}<td><a href="{% url 'correct_attendance' a.pk %}">Corregir</a></td>{% endif %}
+      </tr>
+      {% empty %}<tr><td class="empty-cell" colspan="{% if puede_corregir %}7{% else %}6{% endif %}">No hay marcaciones que coincidan con los filtros.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<section class="section-heading">
+  <div><h2>Horas extra por empleado</h2><p class="section-description muted">Acumulado de los registros incluidos en el filtro.</p></div>
+</section>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Empleado</th><th>Horas extra acumuladas</th></tr></thead>
+    <tbody>
+      {% for item in horas_extra_por_empleado %}<tr><td>{{ item.empleado }}</td><td>{{ item.horas|floatformat:2 }}</td></tr>
+      {% empty %}<tr><td class="empty-cell" colspan="2">No hay horas extra para mostrar.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<section class="section-heading">
+  <div><h2>Exportación de datos</h2><p class="section-description muted">Vista textual de los registros filtrados.</p></div>
+</section>
+<pre class="card">{{ export|default:"No hay datos para exportar." }}</pre>
+{% endblock %}

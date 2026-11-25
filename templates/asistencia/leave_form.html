@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Nueva solicitud · TecnoAndes Personas{% endblock %}
+{% block content %}
+<p class="eyebrow">Tiempo y solicitudes</p>
+<h1>Solicitar permiso</h1>
+<p class="page-intro">Tienes {{ dias }} días de vacaciones disponibles. Completa los datos para enviar tu solicitud.</p>
+<form class="card form-card" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="form-actions">
+    <button type="submit">Enviar solicitud <span aria-hidden="true">→</span></button>
+    <a class="btn btn-secondary" href="{% url 'leave_list' %}">Volver a permisos</a>
+  </div>
+</form>
+{% endblock %}
